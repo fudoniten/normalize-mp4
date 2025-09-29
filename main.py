@@ -1,14 +1,22 @@
 import os
 import sys
 import shutil
+import ffmpeg
 from datetime import datetime
 from pathlib import Path
 import argparse
 
 def get_video_length(file_path):
-    # Placeholder function to get video length in seconds
-    # You can use a library like moviepy or ffmpeg to implement this
-    return 600  # Example: 10 minutes
+    try:
+        probe = ffmpeg.probe(file_path)
+        video_streams = [stream for stream in probe['streams'] if stream['codec_type'] == 'video']
+        if not video_streams:
+            raise ValueError("No video stream found")
+        video_length = float(video_streams[0]['duration'])
+        return video_length
+    except ffmpeg.Error as e:
+        print(f"Error getting video length: {e}")
+        return 0
 
 def move_and_rename_file(file_path, target_dir, show_name, episode_name, year):
     date_str = datetime.now().strftime("%Y-%m-%d")
