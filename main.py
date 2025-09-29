@@ -28,7 +28,7 @@ def move_and_rename_file(file_path, target_dir, show_name, episode_name, year):
     target_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.move(file_path, target_path)
 
-def process_videos(directory, long_dir, short_dir, break_duration, show_name, ffmpeg_path):
+def process_videos(directory, long_dir, short_dir, break_duration, show_name, ffmpeg_path, args):
     for root, _, files in os.walk(directory):
         for file in files:
             file_path = Path(root) / file
@@ -49,7 +49,7 @@ def main():
     
     args = parser.parse_args()
     
-    process_videos(Path(args.directory), Path(args.long_dir), Path(args.short_dir), args.break_duration, args.show_name, args.ffmpeg_path)
+    process_videos(Path(args.directory), Path(args.long_dir), Path(args.short_dir), args.break_duration, args.show_name, args.ffmpeg_path, args)
 
 if __name__ == "__main__":
     main()
