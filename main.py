@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 import argparse
 
-def get_video_length(file_path, ffmpeg_path):
+def get_video_metadata(file_path, ffmpeg_path):
     try:
         probe = ffmpeg.probe(file_path, cmd=ffmpeg_path)
         video_streams = [stream for stream in probe['streams'] if stream['codec_type'] == 'video']
