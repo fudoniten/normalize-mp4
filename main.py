@@ -39,9 +39,9 @@ def process_videos(directory, long_dir, short_dir, break_duration, show_name, ff
 def main():
     parser = argparse.ArgumentParser(description="Categorize and move video files.")
     parser.add_argument("directory", type=str, help="Directory to search for video files.")
-    parser.add_argument("long_dir", type=str, help="Directory to move long videos.")
-    parser.add_argument("short_dir", type=str, help="Directory to move short videos.")
-    parser.add_argument("--break_duration", type=int, default=600, help="Duration in seconds to distinguish long and short videos.")
+    parser.add_argument("long_dir", type=str, help="Directory to move scheduled content (long videos).")
+    parser.add_argument("short_dir", type=str, help="Directory to move filler content (short videos).")
+    parser.add_argument("--break_duration", type=int, default=600, help="Duration in seconds to distinguish scheduled and filler content.")
     parser.add_argument("--ffmpeg_path", type=str, required=True, help="Path to the ffmpeg executable.")
     parser.add_argument("--show_name", type=str, default="Show", help="Name of the show for renaming files.")
     

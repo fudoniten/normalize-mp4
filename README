@@ -1,12 +1,12 @@
 # Video Categorization and Organization Tool
 
-This is a simple and portable Python tool designed to categorize and organize video files based on their duration. It recursively searches a given directory for video files, categorizes them into long and short videos based on a configurable duration threshold, and moves them into specified directories. The files are also renamed in a format suitable for media servers like Jellyfin.
+This is a simple and portable Python tool designed to categorize and organize video files based on their duration. It recursively searches a given directory for video files, categorizes them into scheduled content (long videos) and filler content (short videos) based on a configurable duration threshold, and moves them into specified directories. The files are also renamed in a format suitable for media servers like Jellyfin.
 
 ## Features
 
 - Recursively searches for video files in a specified directory.
-- Categorizes videos into long and short based on a configurable duration threshold.
-- Moves categorized videos into specified directories.
+- Categorizes videos into scheduled content (long videos) and filler content (short videos) based on a configurable duration threshold.
+- Moves categorized content into specified directories.
 - Renames files in a format suitable for media servers.
 
 ## Usage
@@ -16,9 +16,9 @@ python main.py <source_directory> <long_videos_directory> <short_videos_director
 ```
 
 - `<source_directory>`: The directory to search for video files.
-- `<long_videos_directory>`: The directory to move long videos.
-- `<short_videos_directory>`: The directory to move short videos.
-- `--break_duration <seconds>`: Optional. The duration in seconds to distinguish long and short videos. Default is 600 seconds (10 minutes).
+- `<long_videos_directory>`: The directory to move scheduled content (long videos).
+- `<short_videos_directory>`: The directory to move filler content (short videos).
+- `--break_duration <seconds>`: Optional. The duration in seconds to distinguish scheduled and filler content. Default is 600 seconds (10 minutes).
 - `--show_name <name>`: Optional. The name of the show for renaming files. Default is "Show".
 - `--ffmpeg_path <path_to_ffmpeg>`: Required. The path to the `ffmpeg` executable.
 
