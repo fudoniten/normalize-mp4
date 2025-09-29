@@ -22,7 +22,7 @@ def get_video_metadata(file_path, ffmpeg_path):
             'video_length': video_length,
             'show_name': show_name,
             'episode_name': episode_name,
-            'year': year
+            'year': year,
             'video_length': video_length,
             'show_name': show_name,
             'episode_name': episode_name
