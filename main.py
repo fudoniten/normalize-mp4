@@ -13,7 +13,10 @@ def get_video_length(file_path, ffmpeg_path):
         if not video_streams:
             raise ValueError("No video stream found")
         video_length = float(video_streams[0]['duration'])
-        return video_length
+        # Attempt to extract show and episode names from metadata
+        show_name = probe['format'].get('tags', {}).get('show', 'Unknown Show')
+        episode_name = probe['format'].get('tags', {}).get('title', file_path.stem)
+        return video_length, show_name, episode_name
     except ffmpeg.Error as e:
         print(f"Error getting video length: {e}")
         return 0
@@ -30,11 +33,10 @@ def process_videos(directory, long_dir, short_dir, break_duration, show_name, ff
         for file in files:
             file_path = Path(root) / file
             if file_path.suffix.lower() in ['.mp4', '.mkv', '.avi']:  # Add more extensions if needed
-                video_length = get_video_length(file_path, ffmpeg_path)
+                video_length, show_name, episode_name = get_video_length(file_path, ffmpeg_path)
                 target_dir = long_dir if video_length > break_duration else short_dir
-                episode_name = file_path.stem
                 year = datetime.now().year
-                move_and_rename_file(file_path, target_dir, show_name, episode_name, year)
+                move_and_rename_file(file_path, target_dir, args.show_name or show_name, episode_name, year)
 
 def main():
     parser = argparse.ArgumentParser(description="Categorize and move video files.")
