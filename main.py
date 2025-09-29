@@ -16,7 +16,13 @@ def get_video_metadata(file_path, ffmpeg_path):
         # Attempt to extract show and episode names from metadata
         show_name = probe['format'].get('tags', {}).get('show', 'Unknown Show')
         episode_name = probe['format'].get('tags', {}).get('title', file_path.stem)
+        creation_time = probe['format'].get('tags', {}).get('creation_time', None)
+        year = datetime.strptime(creation_time, "%Y-%m-%dT%H:%M:%S.%fZ").year if creation_time else datetime.now().year
         return {
+            'video_length': video_length,
+            'show_name': show_name,
+            'episode_name': episode_name,
+            'year': year
             'video_length': video_length,
             'show_name': show_name,
             'episode_name': episode_name
@@ -39,8 +45,7 @@ def process_videos(directory, long_dir, short_dir, break_duration, show_name, ff
             if file_path.suffix.lower() in ['.mp4', '.mkv', '.avi']:  # Add more extensions if needed
                 metadata = get_video_metadata(file_path, ffmpeg_path)
                 target_dir = long_dir if metadata['video_length'] > break_duration else short_dir
-                year = datetime.now().year
-                move_and_rename_file(file_path, target_dir, args.show_name or metadata['show_name'], metadata['episode_name'], year)
+                move_and_rename_file(file_path, target_dir, args.show_name or metadata['show_name'], metadata['episode_name'], metadata['year'])
 
 def main():
     parser = argparse.ArgumentParser(description="Categorize and move video files.")
