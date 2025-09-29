@@ -1,1 +1,40 @@
-A utility to categorize and organize MP4 files.
+# Video Categorization and Organization Tool
+
+This is a simple and portable Python tool designed to categorize and organize video files based on their duration. It recursively searches a given directory for video files, categorizes them into long and short videos based on a configurable duration threshold, and moves them into specified directories. The files are also renamed in a format suitable for media servers like Jellyfin.
+
+## Features
+
+- Recursively searches for video files in a specified directory.
+- Categorizes videos into long and short based on a configurable duration threshold.
+- Moves categorized videos into specified directories.
+- Renames files in a format suitable for media servers.
+
+## Usage
+
+```bash
+python main.py <source_directory> <long_videos_directory> <short_videos_directory> [--break_duration <seconds>] [--show_name <name>]
+```
+
+- `<source_directory>`: The directory to search for video files.
+- `<long_videos_directory>`: The directory to move long videos.
+- `<short_videos_directory>`: The directory to move short videos.
+- `--break_duration <seconds>`: Optional. The duration in seconds to distinguish long and short videos. Default is 600 seconds (10 minutes).
+- `--show_name <name>`: Optional. The name of the show for renaming files. Default is "Show".
+
+## Example
+
+```bash
+python main.py /path/to/source /path/to/long /path/to/short --break_duration 600 --show_name "My Show"
+```
+
+This command will categorize and move video files from the source directory into the specified long and short directories based on the break duration. Adjust the paths and options as needed.
+
+## Requirements
+
+- Python 3.x
+- Libraries: `argparse`, `os`, `shutil`, `datetime`, `pathlib`
+
+## Notes
+
+- The `get_video_length` function is a placeholder. You can implement it using libraries like `moviepy` or `ffmpeg` to get the actual video length.
+- The tool currently supports `.mp4`, `.mkv`, and `.avi` file extensions. You can add more extensions if needed.
