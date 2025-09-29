@@ -23,7 +23,7 @@ def get_video_metadata(file_path, ffmpeg_path):
         }
     except ffmpeg.Error as e:
         print(f"Error getting video length: {e}")
-        return 0
+        return None
 
 def move_and_rename_file(file_path, target_dir, show_name, episode_name, year):
     date_str = datetime.now().strftime("%Y-%m-%d")
