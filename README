@@ -12,7 +12,7 @@ This is a simple and portable Python tool designed to categorize and organize vi
 ## Usage
 
 ```bash
-python main.py <source_directory> <long_videos_directory> <short_videos_directory> [--break_duration <seconds>] [--show_name <name>]
+python main.py <source_directory> <long_videos_directory> <short_videos_directory> [--break_duration <seconds>] [--show_name <name>] --ffmpeg_path <path_to_ffmpeg>
 ```
 
 - `<source_directory>`: The directory to search for video files.
@@ -20,11 +20,12 @@ python main.py <source_directory> <long_videos_directory> <short_videos_director
 - `<short_videos_directory>`: The directory to move short videos.
 - `--break_duration <seconds>`: Optional. The duration in seconds to distinguish long and short videos. Default is 600 seconds (10 minutes).
 - `--show_name <name>`: Optional. The name of the show for renaming files. Default is "Show".
+- `--ffmpeg_path <path_to_ffmpeg>`: Required. The path to the `ffmpeg` executable.
 
 ## Example
 
 ```bash
-python main.py /path/to/source /path/to/long /path/to/short --break_duration 600 --show_name "My Show"
+python main.py /path/to/source /path/to/long /path/to/short --break_duration 600 --show_name "My Show" --ffmpeg_path /custom/path/to/ffmpeg
 ```
 
 This command will categorize and move video files from the source directory into the specified long and short directories based on the break duration. Adjust the paths and options as needed.
@@ -32,9 +33,9 @@ This command will categorize and move video files from the source directory into
 ## Requirements
 
 - Python 3.x
-- Libraries: `argparse`, `os`, `shutil`, `datetime`, `pathlib`
+- Libraries: `argparse`, `os`, `shutil`, `datetime`, `pathlib`, `ffmpeg-python`
 
 ## Notes
 
-- The `get_video_length` function is a placeholder. You can implement it using libraries like `moviepy` or `ffmpeg` to get the actual video length.
+- The tool uses `ffmpeg-python` to extract video length and metadata. Ensure `ffmpeg` is installed and accessible via the specified path.
 - The tool currently supports `.mp4`, `.mkv`, and `.avi` file extensions. You can add more extensions if needed.
