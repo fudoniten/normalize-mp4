@@ -23,6 +23,35 @@
           checkPhase = ''
             pytest
           '';
+          postInstall = let
+            sitePackages = "${python.sitePackages}";
+            pythonExe = "${python.executable}";
+          in ''
+            runHook prePyz
+
+            staging=$(mktemp -d)
+            cp -a "$out/${sitePackages}/normalize_mp4" "$staging/"
+            cp -a "$out/${sitePackages}/"normalize_mp4-*.dist-info" "$staging/"
+            cp -a "$out/${sitePackages}/ffmpeg" "$staging/"
+            cp -a "$out/${sitePackages}/"ffmpeg_python-*.dist-info" "$staging/"
+
+            # Remove __pycache__ directories to keep the archive small.
+            find "$staging" -type d -name "__pycache__" -prune -exec rm -rf {} +
+
+            mkdir -p "$out/bin"
+            (cd "$staging" && ${pythonExe} -m zipapp . \
+              -m normalize_mp4.__main__:main \
+              -p "/usr/bin/env python3" \
+              -o "$out/bin/normalize-mp4.pyz")
+
+            rm -rf "$staging"
+
+            # The wrapped console script provided by buildPythonApplication is not
+            # needed once the self-contained zipapp has been produced.
+            rm -f "$out/bin/normalize-mp4"
+
+            runHook postPyz
+          '';
         };
       in {
         packages.default = normalize-mp4;
