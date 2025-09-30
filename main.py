@@ -119,9 +119,11 @@ def process_videos(basedir: Path, content_dir: Path, filler_dir: Path, filler_th
         for fname in files:
             file_path = Path(root) / fname
             if file_path.suffix.lower() not in {".mp4", ".mkv", ".s"}:
+                print(f"skipping nonvideo file {file_path}")
                 continue
             meta = get_video_metadata(ctx, file_path)
             if not meta:
+                print(f"metadata not found for file {file_path}")
                 continue
             # Decide long vs short
             target_dir = content_dir if meta["video_length"] > float(filler_threshold) else filler_dir
@@ -137,6 +139,7 @@ def process_videos(basedir: Path, content_dir: Path, filler_dir: Path, filler_th
 def main():
     parser = argparse.ArgumentParser(description="Categorize and move/copy video files by duration.")
     parser.add_argument("directory", type=Path, help="Directory to search for video files.")
+
     parser.add_argument("content_dir", type=Path, help="Directory for long videos (scheduled content).")
     parser.add_argument("filler_dir", type=Path, help="Directory for short videos (filler).")
     parser.add_argument("--filler_threshold", type=int, default=600, help="Seconds separating long vs short.")
