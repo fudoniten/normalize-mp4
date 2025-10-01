@@ -10,16 +10,22 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        python =
-          pkgs.python3.withPackages (pyPkgs: with pyPkgs; [ python-ffmpeg ]);
-        normalize-mp4 = python.pkgs.buildPythonApplication {
+        python = pkgs.python3;
+        pythonPackages = python.pkgs;
+        pythonEnv = python.withPackages (pyPkgs: with pyPkgs; [
+          python-ffmpeg
+          hatchling
+          ffmpeg-python
+          pytest
+        ]);
+        normalize-mp4 = pythonPackages.buildPythonApplication {
           pname = "normalize-mp4";
           version = "0.1.0";
           src = ./.;
           format = "pyproject";
-          nativeBuildInputs = [ python.pkgs.hatchling ];
-          propagatedBuildInputs = [ python.pkgs.ffmpeg-python ];
-          nativeCheckInputs = [ python.pkgs.pytest pkgs.ffmpeg ];
+          nativeBuildInputs = [ pythonPackages.hatchling ];
+          propagatedBuildInputs = [ pythonPackages.ffmpeg-python ];
+          nativeCheckInputs = [ pythonPackages.pytest pkgs.ffmpeg ];
           doCheck = true;
           checkPhase = ''
             pytest
@@ -27,14 +33,15 @@
           postInstall = let
             sitePackages = "${python.sitePackages}";
             pythonExe = "${python.executable}";
+            ffmpegSite = "${pythonPackages.ffmpeg-python}/${python.sitePackages}";
           in ''
             runHook prePyz
 
             staging=$(mktemp -d)
             cp -a $out/${sitePackages}/normalize_mp4 $staging/
             cp -a $out/${sitePackages}/normalize_mp4-*.dist-info $staging/
-            cp -a $out/${sitePackages}/ffmpeg $staging/
-            cp -a $out/${sitePackages}/ffmpeg_python-*.dist-info $staging/
+            cp -a "${ffmpegSite}/ffmpeg" "$staging/"
+            cp -a "${ffmpegSite}"/ffmpeg_python-*.dist-info "$staging/"
 
             # Remove __pycache__ directories to keep the archive small.
             find "$staging" -type d -name "__pycache__" -prune -exec rm -rf {} +
@@ -57,11 +64,8 @@
       in {
         packages.default = normalize-mp4;
         devShells.default = pkgs.mkShell {
-          packages = with python.pkgs; [
-            python
-            hatchling
-            ffmpeg-python
-            pytest
+          packages = [
+            pythonEnv
             pkgs.ffmpeg
           ];
         };
