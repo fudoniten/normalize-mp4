@@ -43,6 +43,8 @@
             cp -a "${ffmpegSite}/ffmpeg" "$staging/"
             cp -a "${ffmpegSite}"/ffmpeg_python-*.dist-info "$staging/"
 
+            chmod -R u+w "$staging"
+
             # Remove __pycache__ directories to keep the archive small.
             find "$staging" -type d -name "__pycache__" -prune -exec rm -rf {} +
 
