@@ -56,14 +56,13 @@
       in {
         packages.default = normalize-mp4;
         devShells.default = pkgs.mkShell {
-          packages = [
+          packages = with python.pkgs; [
             python
-            python.pkgs.hatch
-            python.pkgs.ffmpeg-python
-            python.pkgs.pytest
+            hatchling
+            ffmpeg-python
+            pytest
             pkgs.ffmpeg
           ];
         };
-      }
-    );
+      });
 }
