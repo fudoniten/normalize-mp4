@@ -10,7 +10,8 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        python = pkgs.python311;
+        python =
+          pkgs.python3.withPackages (pyPkgs: with pyPkgs; [ python-ffmpeg ]);
         normalize-mp4 = python.pkgs.buildPythonApplication {
           pname = "normalize-mp4";
           version = "0.1.0";
@@ -30,10 +31,10 @@
             runHook prePyz
 
             staging=$(mktemp -d)
-            cp -a "$out/${sitePackages}/normalize_mp4" "$staging/"
-            cp -a "$out/${sitePackages}/"normalize_mp4-*.dist-info" "$staging/"
-            cp -a "$out/${sitePackages}/ffmpeg" "$staging/"
-            cp -a "$out/${sitePackages}/"ffmpeg_python-*.dist-info" "$staging/"
+            cp -a $out/${sitePackages}/normalize_mp4 $staging/
+            cp -a $out/${sitePackages}/normalize_mp4-*.dist-info $staging/
+            cp -a $out/${sitePackages}/ffmpeg $staging/
+            cp -a $out/${sitePackages}/ffmpeg_python-*.dist-info $staging/
 
             # Remove __pycache__ directories to keep the archive small.
             find "$staging" -type d -name "__pycache__" -prune -exec rm -rf {} +
