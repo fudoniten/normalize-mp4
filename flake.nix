@@ -12,12 +12,13 @@
         pkgs = import nixpkgs { inherit system; };
         python = pkgs.python3;
         pythonPackages = python.pkgs;
-        pythonEnv = python.withPackages (pyPkgs: with pyPkgs; [
-          python-ffmpeg
-          hatchling
-          ffmpeg-python
-          pytest
-        ]);
+        pythonEnv = python.withPackages (pyPkgs:
+          with pyPkgs; [
+            python-ffmpeg
+            hatchling
+            ffmpeg-python
+            pytest
+          ]);
         normalize-mp4 = pythonPackages.buildPythonApplication {
           pname = "normalize-mp4";
           version = "0.1.0";
@@ -33,7 +34,8 @@
           postInstall = let
             sitePackages = "${python.sitePackages}";
             pythonExe = "${python.executable}";
-            ffmpegSite = "${pythonPackages.ffmpeg-python}/${python.sitePackages}";
+            ffmpegSite =
+              "${pythonPackages.ffmpeg-python}/${python.sitePackages}";
           in ''
             runHook prePyz
 
@@ -48,8 +50,7 @@
             # Remove __pycache__ directories to keep the archive small.
             find "$staging" -type d -name "__pycache__" -prune -exec rm -rf {} +
 
-            epoch="${SOURCE_DATE_EPOCH:-315532800}"
-            find "$staging" -exec touch -h -d "@$epoch" {} +
+            find "$staging" -exec touch -h {} +
 
             mkdir -p "$out/bin"
             (cd "$staging" && ${pythonExe} -m zipapp . \
@@ -68,11 +69,7 @@
         };
       in {
         packages.default = normalize-mp4;
-        devShells.default = pkgs.mkShell {
-          packages = [
-            pythonEnv
-            pkgs.ffmpeg
-          ];
-        };
+        devShells.default =
+          pkgs.mkShell { packages = [ pythonEnv pkgs.ffmpeg ]; };
       });
 }
