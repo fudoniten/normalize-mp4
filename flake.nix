@@ -43,8 +43,13 @@
             cp -a "${ffmpegSite}/ffmpeg" "$staging/"
             cp -a "${ffmpegSite}"/ffmpeg_python-*.dist-info "$staging/"
 
+            chmod -R u+w "$staging"
+
             # Remove __pycache__ directories to keep the archive small.
             find "$staging" -type d -name "__pycache__" -prune -exec rm -rf {} +
+
+            epoch="${SOURCE_DATE_EPOCH:-315532800}"
+            find "$staging" -exec touch -h -d "@$epoch" {} +
 
             mkdir -p "$out/bin"
             (cd "$staging" && ${pythonExe} -m zipapp . \
